@@ -14,7 +14,7 @@ db = SQLAlchemy(model_class=Base)
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flaskSqlAlchemy.db'
-#app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///' + os.path.join(app.instance_path, 'users.db')
+# app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///' + os.path.join(app.instance_path, 'users.db')
 db.init_app(app)
 
 
@@ -22,6 +22,12 @@ class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(unique=True)
     email: Mapped[str]
+
+
+class Tasks(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    task: Mapped[str] = mapped_column()
+    status: Mapped[str] = mapped_column()
 
 
 user1 = User(id=1, username="mockuser1", email="mock@gmail.com")
@@ -37,6 +43,8 @@ with app.app_context():
     db.session.commit()
 
 app.run(host='0.0.0.0', debug=True)
+
+
 @app.route("/users")
 def user_list():
     users = db.session.execute(db.select(User).order_by(User.username)).scalars()
